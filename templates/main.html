@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WEATHER SEARCH APP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    body{
+      margin:0;
+      font-family: Inter, Arial, sans-serif;
+      color: #fff;
+      background: url('https://thumbs.dreamstime.com/b/incredibly-beautiful-sunset-sun-lake-sunrise-landscape-panorama-nature-sky-amazing-colorful-clouds-fantasy-design-115177001.jpg') center/cover no-repeat fixed;
+    }
+    .hero { min-height: 35vh; background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2)); display:flex; flex-direction:column; padding:18px 20px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; max-width:1100px; margin:0 auto; width:100%; }
+    .brand { font-weight:900; font-size:25px; }
+    .top-buttons{ display:flex; gap:15px; align-items:center; }
+    .top-buttons a{ color:#fff; text-decoration:none; font-weight:800; font-size:13px; letter-spacing:.6px; padding:8px 14px; border-radius:8px; background:rgba(255,255,255,0.08); box-shadow:0 6px 18px rgba(0, 0, 0, 0.745); }
+    .top-buttons a:hover{ background: rgba(255, 255, 255, 0.04); color:#06283d; }
+    .hero-center { display:flex; justify-content:left; width:100%; margin-top:auto; margin-bottom:auto; padding:28px 0; }
+    .search-wrap{ width:min(820px, 92%); display:flex; gap:8px; margin-left:105px; }
+    .search-input{ flex:1; background:#fff; border-radius:8px; padding:10px 12px; box-shadow:0 6px 18px rgb(0, 0, 0); display:flex; }
+    .search-input input{ border:0; outline:0; width:100%; font-size:17px; color:#111; }
+    .search-action{ background:#fff; border-radius:8px; padding:10px 20px; cursor:pointer; font-weight:700; color:#1e3a8a; box-shadow:0 6px 18px rgb(0, 0, 0); }
+    .content{ max-width:1100px; margin:22px auto; padding:0 18px 48px; }
+    h3.section-title{ color:#fff; margin:18px 0; font-size:18px; font-weight: 800; text-transform:uppercase; letter-spacing:1px; }
+    .history{ display:flex; gap:12px; flex-wrap:wrap; }
+    .card{ width:240px; padding:18px; border-radius:12px; background:rgba(255,255,255,0.08); backdrop-filter:blur(8px); box-shadow:0 10px 28px rgba(0,0,0,0.45); cursor:pointer; transition:0.2s ease; }
+    .card:hover{ transform:translateY(-4px); box-shadow:0 14px 34px rgb(0, 0, 0); }
+    .city{font-size:18px;font-weight:700;}
+    .mid-row{display:flex;align-items:center;gap:10px;margin:10px 0;}
+    .temp{font-size:28px;font-weight:700;}
+    #owmMap { width:100%; height:380px; margin-top:16px; border-radius:12px; border:2px solid rgba(255,255,255,0.45); box-shadow:0 10px 26px rgba(0,0,0,0.45); }
+    .map-search-box{ margin-top:12px; display:flex; gap:8px; }
+    .map-search-box input{ flex:1; padding:10px 12px; border-radius:8px; border:0; font-size:15px; color:#111; }
+    .map-search-box button{ padding:10px 18px; border-radius:8px; background:#fff; color:#1e3a8a; font-weight:700; cursor:pointer; border:0; box-shadow:0 6px 18px rgb(0, 0, 0); }
+    #locateMeBtn{ background:#0d9488 !important; color:#fff !important; }
+    @media (max-width:900px){ .hero-center{ flex-direction:column; align-items:flex-start; gap:12px; } .search-wrap{ margin-left:20px; width:calc(100% - 40px); } }
+    .map-link { display:inline-block; margin-top:6px; background:#fff; color:#06283d; padding:6px 8px; border-radius:6px; text-decoration:none; font-weight:700; }
+  </style>
+</head>
+
+
+
+<body>
+<header class="hero">
+  <div class="topbar">
+    <div class="brand">WEATHER SEARCH APP</div>
+    <div class="top-buttons" role="toolbar" aria-label="Quick weather views">
+      <a id="btn-today" href="#" data-view="hourly">TODAY WEATHER</a>
+      <a id="btn-hourly"  href="#" data-view="today">HOURLY WEATHER</a>
+      <a id="btn-daily"  href="#" data-view="daily">DAILY WEATHER</a>
+    </div>
+  </div>
+  <div class="hero-center">
+    <div class="search-wrap">
+      <div class="search-input">
+        <input id="cityInput" placeholder="Enter the city">
+      </div>
+      <button id="searchBtn" class="search-action">Search</button>
+    </div>
+  </div>
+</header>
+
+
+<main class="content">
+  <h3 class="section-title">Recent Locations</h3>
+  <div id="historyList" class="history"></div>
+  <h3 class="section-title">Map</h3>
+  <div class="map-search-box">
+    <input id="mapSearchInput" placeholder="Search city on map (e.g. Baramulla)">
+    <button id="mapSearchBtn">Go</button>
+    <button id="locateMeBtn">Locate Me</button>
+  </div>
+  <div id="owmMap"></div>
+</main>
+
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const OWM_KEY = "26441fafeaecb0bc89ff364307f6fa5a"; 
+const map = L.map('owmMap', { preferCanvas: true }).setView([20, 0], 3);
+let searchMarker = null;          
+let markersGroup = L.layerGroup().addTo(map); 
+
+const osmBase = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
+const owm_temp = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, { maxZoom: 19, opacity: 0.6 });
+const owm_clouds = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, { maxZoom: 19, opacity: 0.6 });
+const owm_precip = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, { maxZoom: 19, opacity: 0.6 });
+const owm_wind = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, { maxZoom: 19, opacity: 0.6 });
+osmBase.addTo(map);
+const baseMaps = { "OpenStreetMap": osmBase };
+const overlayMaps = {
+  "OWM — Temperature": owm_temp,
+  "OWM — Clouds": owm_clouds,
+  "OWM — Precipitation": owm_precip,
+  "OWM — Wind": owm_wind,
+  "Search markers": markersGroup
+};
+L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+
+setTimeout(() => map.invalidateSize(), 200);
+async function geocodeCity(city) {
+  if (!city) return null;
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${OWM_KEY}`;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const arr = await r.json();
+    if (!Array.isArray(arr) || !arr.length) return null;
+    const item = arr[0];
+    const prettyName = [item.name, item.state, item.country].filter(Boolean).join(', ');
+    return { lat: item.lat, lon: item.lon, name: prettyName };
+  } catch (e) {
+    console.warn('geocode error', e);
+    return null;
+  }
+}
+
+function placeCityMarker({ lat, lon, name }) {
+  if (!lat || !lon) return;
+  if (searchMarker) { map.removeLayer(searchMarker); searchMarker = null; }
+  searchMarker = L.marker([lat, lon], { title: name }).addTo(map);
+  const popupHtml = `<strong>${name}</strong>
+    <div style="margin-top:6px">
+      <a class="map-link" href="#" data-city="${escapeHtml(name)}">View</a>
+    </div>`;
+  searchMarker.bindPopup(popupHtml).openPopup();
+  map.setView([lat, lon], 11, { animate: true });
+
+  searchMarker.on('popupopen', (ev) => {
+    const popupNode = ev.popup.getElement();
+    const link = popupNode && popupNode.querySelector && popupNode.querySelector('.map-link');
+    if (link) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        refreshAndOpen(name, "");
+      });
+    }
+  });
+}
+
+function escapeHtml(text) {
+  return String(text || '').replace(/[&<>"']/g, function (m) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+  });
+}
+
+window.addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 200));
+
+let lastClickedCity = ""
+async function refreshAndOpen(city, view){
+  city = (city||"").trim();
+  if(!city){ alert("Enter or pick a city first"); return; }
+  try{
+    const resp = await fetch("/api/weather", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({city})
+    });
+    const js = await resp.json().catch(()=>null);
+    if(!resp.ok){
+      alert(js && js.error ? js.error : `Server error ${resp.status}`);
+      return;
+    }
+    const url = view ? `/weather/${encodeURIComponent(city)}/${view}` : `/weather/${encodeURIComponent(city)}`;
+    window.location.href = url;
+  }catch(e){
+    console.error(e);
+    alert("Network error — try again.");
+  }
+}
+
+async function loadHistory(){
+  try{
+    const r = await fetch('/api/history');
+    const arr = await r.json();
+    if(!arr || !arr.length){
+      document.getElementById('historyList').innerHTML = "No recent searches";
+      return;
+    }
+
+    if(!lastClickedCity && arr.length) lastClickedCity = arr[0].city;
+
+    document.getElementById('historyList').innerHTML = arr.map(item=>`
+      <div class="card recent-card" data-city="${escapeHtml(item.city)}">
+        <div class="city">${escapeHtml(item.city)}</div>
+        <div class="mid-row">
+          <div class="weather-icon">${item.icon || '☀️'}</div>
+          <div class="temp">${Math.round(item.temperature)}°C</div>
+        </div>
+        <div class="small-desc">${escapeHtml(item.dt)}</div>
+      </div>
+    `).join('');
+
+    markersGroup.clearLayers();
+    for (const it of arr) {
+      (async () => {
+        const g = await geocodeCity(it.city);
+        if (g) {
+          const m = L.circleMarker([g.lat, g.lon], { radius: 6 }).bindPopup(`<strong>${escapeHtml(g.name)}</strong><div style="margin-top:6px"><a class="map-link" href="#" data-city="${escapeHtml(g.name)}">View</a></div>`);
+          m.on('popupopen', (ev) => {
+            const popupNode = ev.popup.getElement();
+            const link = popupNode && popupNode.querySelector && popupNode.querySelector('.map-link');
+            if (link) {
+              link.addEventListener('click', (e) => {
+                e.preventDefault();
+                refreshAndOpen(g.name, "");
+              });
+            }
+          });
+          markersGroup.addLayer(m);
+        }
+      })();
+    }
+
+  }catch(e){
+    console.error("history load failed", e);
+    document.getElementById('historyList').innerHTML = "Error loading history";
+  }
+}
+loadHistory();
+
+document.addEventListener('click', function(ev){
+  const el = ev.target.closest && ev.target.closest('.recent-card');
+  if(!el) return;
+  const city = el.getAttribute('data-city') || '';
+  if(!city) return;
+  lastClickedCity = city;
+  const inp = document.getElementById('cityInput');
+  if(inp) inp.value = city;
+  (async ()=>{
+    const g = await geocodeCity(city);
+    if (g) placeCityMarker(g);
+    refreshAndOpen(city, "");
+  })();
+});
+
+document.getElementById('searchBtn').addEventListener('click', ()=>{
+  const city = document.getElementById('cityInput').value;
+  (async ()=>{
+    const g = await geocodeCity(city);
+    if (g) placeCityMarker(g);
+    refreshAndOpen(city, "");
+  })();
+});
+
+document.getElementById('mapSearchBtn').addEventListener('click', ()=>{
+  const city = document.getElementById('mapSearchInput').value;
+  (async ()=>{
+    const g = await geocodeCity(city);
+    if (!g){ alert("Location not found on map."); return; }
+    placeCityMarker(g);
+  })();
+});
+document.getElementById('mapSearchInput').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') document.getElementById('mapSearchBtn').click(); });
+
+function headerAction(view){
+  const city = (document.getElementById('cityInput').value || "").trim() || lastClickedCity;
+  (async ()=>{
+    const g = await geocodeCity(city);
+    if (g) placeCityMarker(g);
+    refreshAndOpen(city, view);
+  })();
+}
+
+document.getElementById('btn-hourly').addEventListener('click', (e)=>{ e.preventDefault(); headerAction('hourly'); });
+document.getElementById('btn-today').addEventListener('click', (e)=>{ e.preventDefault(); headerAction('today'); });
+document.getElementById('btn-daily').addEventListener('click', (e)=>{ e.preventDefault(); headerAction('daily'); });
+
+document.getElementById('locateMeBtn').addEventListener('click', ()=>{
+  if(!navigator.geolocation) return alert("Geolocation not supported");
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+    if(searchMarker){ map.removeLayer(searchMarker); }
+    searchMarker = L.marker([lat, lon]).addTo(map).bindPopup("<b>You are here</b>").openPopup();
+    map.setView([lat, lon], 11);
+  });
+});
+
+document.getElementById('cityInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('searchBtn').click();
+});
+
+map.on('click', async function(e) {
+  const lat = e.latlng.lat, lon = e.latlng.lng;
+  try {
+    const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${OWM_KEY}`;
+    const r = await fetch(url);
+    if (!r.ok) {
+
+      L.popup().setLatLng([lat, lon]).setContent(`Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`).openOn(map);
+      return;
+    }
+    const arr = await r.json();
+    const info = (Array.isArray(arr) && arr[0]) || null;
+    const name = info ? [info.name, info.state, info.country].filter(Boolean).join(', ') : `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    const popup = L.popup()
+      .setLatLng([lat, lon])
+      .setContent(`<strong>${escapeHtml(name)}</strong><div style="margin-top:6px"><a class="map-link" href="#" data-city="${escapeHtml(name)}">View</a></div>`)
+      .openOn(map);
+
+    setTimeout(()=>{ 
+      const popupNode = popup.getElement();
+      const link = popupNode && popupNode.querySelector && popupNode.querySelector('.map-link');
+      if (link) {
+        link.addEventListener('click', (ev) => { ev.preventDefault(); refreshAndOpen(name, ""); });
+      }
+    }, 0);
+
+  } catch (err) {
+    console.warn('reverse geocode failed', err);
+    L.popup().setLatLng([lat, lon]).setContent(`Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`).openOn(map);
+  }
+});
+</script>
+
+</body>
+</html>

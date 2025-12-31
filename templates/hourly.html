@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hourly — {{ city }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body{
+        margin:0;
+        font-family: Inter, Arial, sans-serif;
+        background:#ffffff;
+        color:#111;
+        background: url('https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?cs=srgb&dl=pexels-thatguycraig000-1563356.jpg&fm=jpg') center/cover no-repeat fixed;
+    }
+
+    .header{
+        font-size:40px;
+        font-weight:900;
+        padding:30px;
+        text-transform: uppercase;
+        color:#fff;
+    }
+
+    .container{
+        width:95%;
+        margin:auto;
+        color:#fff;
+        padding:20px;
+        background: rgba(0,0,0,0.0);     
+        border-radius:14px;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    .hour-box{
+        display:inline-block;
+        width:110px;
+        padding:14px;
+        margin-right:12px;
+        background: linear-gradient(180deg,#0f3a6636 0%, #145b8a3d 100%);  
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius:20px;
+        text-align:center;
+        border:1px solid rgba(255, 255, 255, 0.269);
+        box-shadow:0 8px 18px rgb(0, 0, 0);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+    }
+
+    /* ✅ CURRENT HOUR HIGHLIGHT (ADDED) */
+    .hour-box.now{
+        border: 2px solid rgba(255,255,255,0.9);
+        box-shadow: 0 0 22px rgba(255,255,255,0.45);
+        transform: scale(1.04);
+    }
+
+    .time{
+        font-size:14px;
+        font-weight:700;
+        color:#fff;
+        margin-bottom:8px;
+    }
+
+    .icon{
+        font-size:32px;
+        margin-bottom:6px;
+    }
+
+    .temp{
+        font-size:22px;
+        font-weight:900;
+        margin-bottom:6px;
+    }
+
+    .back{
+        position:fixed;
+        top:20px;
+        right:20px;
+        padding:10px 16px;
+        background:#333;
+        color:#fff;
+        border-radius:8px;
+        text-decoration:none;
+        font-weight:700;
+    }
+
+    .back{
+        display:inline-block; 
+        margin-top:23px; 
+        padding:8px 12px; 
+        background:rgba(0,0,0,0.6);
+        color:#fff; 
+        border-radius:6px; 
+        text-decoration:none; 
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">{{ city }}</div>
+
+<div class="container">
+{% for h in hourly %}
+    <!-- ✅ ONLY CHANGE: conditional 'now' class -->
+    <div class="hour-box {% if h.is_now %}now{% endif %}">
+        <div class="time">{{ h.time }}</div>
+        <div class="icon">{{ h.icon }}</div>
+        <div class="temp">{{ h.temp }}°C</div>
+    </div>
+{% endfor %}
+<a href="/" class="back">← Back to Search</a>
+</div>
+
+</body>
+</html>

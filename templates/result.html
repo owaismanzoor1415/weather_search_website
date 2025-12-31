@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ city }} — Weather</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root{ --nav-height:56px; --accent:#f05a24; }
+    html,body{height:100%; margin:0; font-family:Inter,Arial,sans-serif; color:#fff;}
+    body{
+      background: url("https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?cs=srgb&dl=pexels-thatguycraig000-1563356.jpg&fm=jpg") center/cover no-repeat fixed;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .top-nav { display:none; }
+
+    main {
+      max-width:1100px;
+      margin: 40px auto;
+      padding: 20px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+
+    .card {
+      width:380px;
+      padding:100px 80px;
+      border-radius:12px;
+      background: linear-gradient(180deg,#0f3a663d 0%, #145b8a3f 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.84);
+      color:#fff;
+      border: 1px solid rgba(255, 255, 255, 0.461);
+      text-align:left;
+      
+    }
+
+    .city { 
+      font-size:30px; 
+      font-weight:800; 
+      margin-bottom:20px; 
+      text-transform:uppercase; 
+      text-shadow:0 3px 6px rgba(0, 0, 0, 0.622); 
+    }
+
+    .temp-row { 
+      display:flex; 
+      gap:10px; 
+      align-items:center; 
+      margin-bottom:10px; 
+    }
+
+    .weather-icon { 
+      font-size:34px; 
+      width:48px; 
+      text-align:center; 
+    }
+
+    .temp-value { 
+      font-size:30px; 
+      font-weight:900; 
+      text-shadow:0 6px 12px rgba(0, 0, 0, 0.485); 
+    }
+
+    .time { font-size:12px; 
+      text-shadow:0 6px 12px rgba(0, 0, 0, 0.706); 
+      margin-top:20px; 
+    }
+
+    .back { 
+      display:inline-block; 
+      margin-top:20px; 
+      padding:8px 12px; 
+      background:rgba(0,0,0,0.6); 
+      color:#fff; 
+      border-radius:6px; 
+      text-decoration:none; 
+    }
+
+    @media (max-width:520px){
+      .card { width:92%; padding:16px; }
+      .temp-value { font-size:26px; }
+      .weather-icon { font-size:28px; }
+    }
+  </style>
+</head>
+<body>
+
+<main>
+  <div class="card" role="region" aria-live="polite">
+    <div class="city">{{ city }}</div>
+
+    <div class="temp-row">
+      <div class="weather-icon">{% if icon %}{{ icon }}{% else %}🌙{% endif %}</div>
+      <div class="temp-value">{{ temp }}°C</div>
+    </div>
+
+    <div class="time">{{ dt }}</div>
+    
+    <a href="/" class="back">← Back to Search</a>
+  </div>
+</main>
+
+</body>
+</html>

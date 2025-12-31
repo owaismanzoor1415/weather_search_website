@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login | Weather App</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    margin:0;
+    height:100vh;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* BACKGROUND WATERMARK (TOP) */
+.watermark{
+    position:fixed;
+    top:25px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:42px;
+    font-weight:800;
+    color:rgba(255, 255, 255, 0.35);
+    letter-spacing:4px;
+    user-select:none;
+    pointer-events:none;
+}
+
+/* LOGIN CARD */
+.login-box{
+    background:#ffffff;
+    width:360px;
+    padding:35px 30px;
+    border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.15);
+    animation: fadeIn 0.8s ease-in-out;
+    position:relative;
+    z-index:2;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.login-box h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:#333;
+    letter-spacing:1px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+    outline:none;
+    transition:0.3s;
+}
+
+.input-group input:focus{
+    border-color:#4CAF50;
+    box-shadow:0 0 0 3px rgba(76,175,80,0.2);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#4CAF50;
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#43a047;
+    transform:translateY(-1px);
+    box-shadow:0 8px 15px rgba(0,0,0,0.15);
+}
+
+.error{
+    color:#e53935;
+    margin-top:15px;
+    text-align:center;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND TEXT -->
+<div class="watermark">Developed by OWAIS</div>
+
+<div class="login-box">
+    <h2>Weather App Login</h2>
+
+    <form method="POST">
+        <div class="input-group">
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+</div>
+
+</body>
+</html>
