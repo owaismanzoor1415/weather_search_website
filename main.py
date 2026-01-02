@@ -13,6 +13,7 @@ load_dotenv()
 
 API_KEY = os.getenv("OWM_API_KEY")
 MONGO_URI = os.getenv("MONGO_URI")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not API_KEY:
     raise RuntimeError("Set OWM_API_KEY")
@@ -20,6 +21,9 @@ if not API_KEY:
 if not MONGO_URI:
     raise RuntimeError("Set MONGO_URI")
 
+if not SECRET_KEY:
+    raise RuntimeError("Set SECRET_KEY")
+    
 # ================= APP =================
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "weather_secret_key")
