@@ -5,8 +5,10 @@ from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 import webbrowser, threading
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime as _dt
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 # ================= ENV =================
 load_dotenv()
@@ -21,47 +23,105 @@ collection = MongoClient(
     "mongodb://127.0.0.1:27017/ecommerceDB"
 )["weather_db"]["weather"]
 
+users = MongoClient(
+    "mongodb://127.0.0.1:27017/ecommerceDB"
+)["weather_db"]["users"]
+
+
 # ================= ICON =================
-def weather_icon(main, desc):
+def weather_icon(main, desc, dt=None, sunrise=None, sunset=None):
     main = (main or "").lower()
     desc = (desc or "").lower()
 
+    # determine night only if time data is available
+    is_night = False
+    if dt is not None and sunrise is not None and sunset is not None:
+        is_night = dt < sunrise or dt > sunset
+
     if "thunder" in main or "thunder" in desc:
         return "⛈️"
+    if "snow" in main or "snow" in desc:
+        return "❄️"
     if "rain" in main or "drizzle" in desc:
         return "🌧️"
-    if "snow" in main:
-        return "❄️"
     if "cloud" in main:
         return "☁️"
     if "mist" in main or "fog" in main or "haze" in main:
         return "🌫️"
+    if is_night:
+        return "🌙"
     return "☀️"
+
+
+
+
+# ================= REGISTER =================
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        confirm = request.form.get("confirm", "")
+
+        if not email or not password or not confirm:
+            return render_template("register.html", error="All fields required")
+
+        if password != confirm:
+            return render_template("register.html", error="Passwords do not match")
+
+        if users.find_one({"email": email}):
+            return render_template("register.html", error="User already exists")
+
+        users.insert_one({
+            "email": email,
+            "password": generate_password_hash(password),
+            "created_at": datetime.utcnow()
+        })
+
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
 
 # ================= LOGIN =================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        if (
-            request.form.get("username") == "owais123@gmail.com"
-            and request.form.get("password") == "owais123"
-        ):
-            session["user"] = "admin"
-            return redirect(url_for("home"))
-        return render_template("login.html", error="Invalid credentials")
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+
+        if not email or not password:
+            return render_template("login.html", error="Email and password required")
+
+        user = users.find_one({"email": email})
+
+        if not user:
+            return render_template("login.html", error="User not found")
+
+        if not check_password_hash(user["password"], password):
+            return render_template("login.html", error="Incorrect password")
+
+        session["user_id"] = str(user["_id"])
+        session["email"] = user["email"]
+
+        return redirect(url_for("home"))
+
     return render_template("login.html")
+
 
 @app.route("/logout")
 def logout():
-    session.pop("user", None)
+    session.clear()
     return redirect(url_for("login"))
+
 
 # ================= HOME =================
 @app.route("/")
 def home():
-    if "user" not in session:
+    if "user_id" not in session:
         return redirect(url_for("login"))
     return render_template("main.html")
+
 
 # ================= WEATHER SEARCH =================
 @app.route("/api/weather", methods=["POST"])
@@ -70,7 +130,6 @@ def api_weather():
     if not city:
         return jsonify({"error": "City required"}), 400
 
-    # 🔥 LIVE WEATHER
     resp = requests.get(
         "https://api.openweathermap.org/data/2.5/weather",
         params={"q": city, "appid": API_KEY, "units": "metric"},
@@ -81,20 +140,17 @@ def api_weather():
         return jsonify({"error": "City not found"}), 404
 
     js = resp.json()
-
     main = js["weather"][0]["main"]
     desc = js["weather"][0]["description"]
     temp = js["main"]["temp"]
 
-    # ✅ STORE ONLY HISTORY
     collection.insert_one({
         "city": city,
-        "temperature": js["main"]["temp"],                 # ✅ ADD
-        "main": js["weather"][0]["main"],                  # ✅ ADD
-        "description": js["weather"][0]["description"],    # ✅ ADD
+        "temperature": temp,
+        "main": main,
+        "description": desc,
         "dt": datetime.now().strftime("%d-%b-%Y %I:%M:%S %p")
-})
-
+    })
 
     return jsonify({
         "city": city,
@@ -103,6 +159,7 @@ def api_weather():
         "description": desc,
         "dt": datetime.now().strftime("%d-%b-%Y %I:%M:%S %p")
     })
+
 
 # ================= HISTORY =================
 @app.route("/api/history")
@@ -121,7 +178,7 @@ def api_history():
     return jsonify(cleaned), 200
 
 
-# ================= RESULT PAGE (LIVE) =================
+# ================= RESULT PAGE =================
 @app.route("/weather/<city>")
 def show_weather_page(city):
     resp = requests.get(
@@ -144,6 +201,7 @@ def show_weather_page(city):
         dt=datetime.now().strftime("%d-%b-%Y %I:%M:%S %p")
     )
 
+
 # ================= TODAY =================
 @app.route("/weather/<city>/today")
 def today(city):
@@ -154,9 +212,6 @@ def today(city):
     )
     cur.raise_for_status()
     js = cur.json()
-
-    main = js["weather"][0]["main"]
-    desc = js["weather"][0]["description"]
 
     f = requests.get(
         "https://api.openweathermap.org/data/2.5/forecast",
@@ -172,6 +227,9 @@ def today(city):
         if _dt.strptime(it["dt_txt"], "%Y-%m-%d %H:%M:%S").date() == today_date
     ]
 
+    main = js["weather"][0]["main"]
+    desc = js["weather"][0]["description"]
+
     return render_template(
         "today.html",
         city=city,
@@ -183,60 +241,47 @@ def today(city):
         today_low=round(min(temps)) if temps else None
     )
 
-# hourly
+
+# ================= HOURLY =================
 @app.route("/weather/<city>/hourly")
 def hourly(city):
-    url = "https://api.openweathermap.org/data/2.5/forecast"
     resp = requests.get(
-        url,
+        "https://api.openweathermap.org/data/2.5/forecast",
         params={"q": city, "appid": API_KEY, "units": "metric"},
         timeout=8
     )
     resp.raise_for_status()
     js = resp.json()
 
+    sunrise = js["city"]["sunrise"]
+    sunset = js["city"]["sunset"]
+
     hourly_data = []
-    now = _dt.now()
 
-    for item in js.get("list", []):
-        dt_obj = _dt.strptime(item["dt_txt"], "%Y-%m-%d %H:%M:%S")
+    for item in js.get("list", [])[:12]:
+        dt_ts = item["dt"]  # unix timestamp
+        dt_obj = _dt.fromtimestamp(dt_ts)
 
-        if dt_obj >= now:
-            main = item["weather"][0]["main"]
-            desc = item["weather"][0]["description"]
+        main = item["weather"][0]["main"]
+        desc = item["weather"][0]["description"]
 
-            # 🌙 DAY / NIGHT FIX
-            hour = dt_obj.hour
-            is_night = hour < 6 or hour >= 19
-            icon = "🌙" if is_night else weather_icon(main, desc)
+        icon = weather_icon(main, desc, dt_ts, sunrise, sunset)
 
-            # ⏱ CURRENT HOUR HIGHLIGHT
-            is_now = abs((dt_obj - now).total_seconds()) < 3600
+        hourly_data.append({
+            "time": dt_obj.strftime("%I:%M %p").lstrip("0"),
+            "temp": round(item["main"]["temp"]),
+            "humidity": item["main"]["humidity"],
+            "icon": icon
+        })
 
-            hourly_data.append({
-                "time": dt_obj.strftime("%I:%M %p").lstrip("0"),
-                "temp": round(item["main"]["temp"]),
-                "humidity": item["main"]["humidity"],
-                "icon": icon,
-                "is_now": is_now
-            })
-
-        if len(hourly_data) == 12:
-            break
-
-    return render_template(
-        "hourly.html",
-        city=city,
-        hourly=hourly_data
-    )
+    return render_template("hourly.html", city=city, hourly=hourly_data)
 
 
-# daily
+# ================= DAILY =================
 @app.route("/weather/<city>/daily")
 def daily(city):
-    url = "https://api.openweathermap.org/data/2.5/forecast"
     resp = requests.get(
-        url,
+        "https://api.openweathermap.org/data/2.5/forecast",
         params={"q": city, "appid": API_KEY, "units": "metric"},
         timeout=8
     )
@@ -245,17 +290,18 @@ def daily(city):
 
     grouped = defaultdict(list)
     for item in js.get("list", []):
-        date_key = item["dt_txt"].split(" ")[0]
-        grouped[date_key].append(item)
+        grouped[item["dt_txt"].split(" ")[0]].append(item)
 
     daily_data = []
     for date_key in sorted(grouped.keys())[:5]:
         items = grouped[date_key]
         temps = [it["main"]["temp"] for it in items]
 
-        mid = items[len(items)//2]
-        main = mid["weather"][0]["main"]
-        desc = mid["weather"][0]["description"]
+        conditions = [it["weather"][0]["main"] for it in items]
+        descs = [it["weather"][0]["description"] for it in items]
+
+        main = Counter(conditions).most_common(1)[0][0]
+        desc = Counter(descs).most_common(1)[0][0]
 
         dt_obj = _dt.strptime(date_key, "%Y-%m-%d")
 
@@ -268,11 +314,7 @@ def daily(city):
             "desc": desc.capitalize()
         })
 
-    return render_template(
-        "daily.html",
-        city=city,
-        days=daily_data
-    )
+    return render_template("daily.html", city=city, days=daily_data)
 
 
 # ================= AUTO OPEN =================

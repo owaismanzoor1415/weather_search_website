@@ -1,0 +1,104 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== PAGE BACKGROUND ===== */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4f46e5, #22c55e);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== CARD ===== */
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  padding: 30px 28px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== TITLE ===== */
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #111827;
+}
+
+/* ===== FORM ===== */
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ===== INPUTS ===== */
+.auth-container input {
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.auth-container input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== BUTTON ===== */
+.auth-container button {
+  margin-top: 6px;
+  padding: 12px;
+  background: #4f46e5;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.auth-container button:hover {
+  background: #4338ca;
+}
+
+.auth-container button:active {
+  transform: scale(0.98);
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ===== FOOTER LINKS ===== */
+.auth-footer {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-footer a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
