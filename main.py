@@ -17,21 +17,18 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not API_KEY:
     raise RuntimeError("Set OWM_API_KEY")
-
 if not MONGO_URI:
     raise RuntimeError("Set MONGO_URI")
-
 if not SECRET_KEY:
     raise RuntimeError("Set SECRET_KEY")
-    
+
 # ================= APP =================
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "weather_secret_key")
+app.secret_key = SECRET_KEY
 
 # ================= DB =================
 client = MongoClient(MONGO_URI)
 db = client["weather_db"]
-
 collection = db["weather"]
 users = db["users"]
 
@@ -39,14 +36,9 @@ users = db["users"]
 def weather_icon(main, desc, dt=None, sunrise=None, sunset=None):
     main = (main or "").lower()
     desc = (desc or "").lower()
-
-    is_night = False
-    if dt and sunrise and sunset:
-        is_night = dt < sunrise or dt > sunset
-
     if "thunder" in main or "thunder" in desc:
         return "⛈️"
-    if "snow" in main or "snow" in desc:
+    if "snow" in main:
         return "❄️"
     if "rain" in main or "drizzle" in desc:
         return "🌧️"
@@ -54,8 +46,6 @@ def weather_icon(main, desc, dt=None, sunrise=None, sunset=None):
         return "☁️"
     if "mist" in main or "fog" in main or "haze" in main:
         return "🌫️"
-    if is_night:
-        return "🌙"
     return "☀️"
 
 # ================= REGISTER =================
@@ -68,10 +58,8 @@ def register():
 
         if not email or not password or not confirm:
             return render_template("register.html", error="All fields required")
-
         if password != confirm:
             return render_template("register.html", error="Passwords do not match")
-
         if users.find_one({"email": email}):
             return render_template("register.html", error="User already exists")
 
@@ -80,7 +68,6 @@ def register():
             "password": generate_password_hash(password),
             "created_at": datetime.utcnow()
         })
-
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -98,7 +85,6 @@ def login():
 
         session["user_id"] = str(user["_id"])
         session["email"] = user["email"]
-
         return redirect(url_for("home"))
 
     return render_template("login.html")
@@ -141,17 +127,40 @@ def api_weather():
         "dt": datetime.utcnow()
     })
 
+    # 🔴 IMPORTANT: redirect for UI
     return jsonify({
-        "city": city,
-        "temperature": js["main"]["temp"],
-        "icon": weather_icon(js["weather"][0]["main"], js["weather"][0]["description"]),
-        "description": js["weather"][0]["description"]
+        "redirect": url_for("today", city=city)
     })
 
+# ================= TODAY (NEW) =================
+@app.route("/weather/<city>/today")
+def today(city):
+    r = requests.get(
+        "https://api.openweathermap.org/data/2.5/weather",
+        params={"q": city, "appid": API_KEY, "units": "metric"},
+        timeout=8
+    )
+
+    if r.status_code != 200:
+        return redirect(url_for("home"))
+
+    js = r.json()
+
+    data = {
+        "city": city,
+        "temp": round(js["main"]["temp"]),
+        "humidity": js["main"]["humidity"],
+        "wind": js["wind"]["speed"],
+        "desc": js["weather"][0]["description"].capitalize(),
+        "icon": weather_icon(js["weather"][0]["main"], js["weather"][0]["description"])
+    }
+
+    return render_template("today.html", data=data)
+
+# ================= WEATHER CITY =================
 @app.route("/weather/<city>")
 def weather_city(city):
-    return render_template("result.html", city=city)
-
+    return redirect(url_for("today", city=city))
 
 # ================= HISTORY =================
 @app.route("/api/history")
@@ -177,23 +186,13 @@ def hourly(city):
     r.raise_for_status()
     js = r.json()
 
-    sunrise = js["city"]["sunrise"]
-    sunset = js["city"]["sunset"]
-
     hourly_data = []
     for it in js["list"][:12]:
-        icon = weather_icon(
-            it["weather"][0]["main"],
-            it["weather"][0]["description"],
-            it["dt"],
-            sunrise,
-            sunset
-        )
         hourly_data.append({
             "time": _dt.fromtimestamp(it["dt"]).strftime("%I:%M %p").lstrip("0"),
             "temp": round(it["main"]["temp"]),
             "humidity": it["main"]["humidity"],
-            "icon": icon
+            "icon": weather_icon(it["weather"][0]["main"], it["weather"][0]["description"])
         })
 
     return render_template("hourly.html", city=city, hourly=hourly_data)
