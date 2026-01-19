@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Today — {{ city }}</title>
+<title>Today — {{ data.city }}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   :root{
@@ -131,28 +131,26 @@
     .weather-icon{ 
       font-size:40px; 
     }
-
   }
-
 </style>
 </head>
+
 <body>
 
 <div class="card" role="region" aria-live="polite">
   <div class="row-top">
     <div class="left">
-      <div class="label">{{ city }}</div>
-      <div class="temp-large">{{ temp|round }}°C</div>
-      <div class="desc">{{ desc or "Current" }}</div>
-      <div class="dt">{{ dt }}</div>
+      <div class="label">{{ data.city }}</div>
+      <div class="temp-large">{{ data.temp }}°C</div>
+      <div class="desc">{{ data.desc or "Current" }}</div>
+      <div class="dt"></div>
       <a href="/" class="back">← Back to Search</a>
     </div>
 
     <div class="right">
-      <div class="weather-icon">{{ icon or "" }}</div>
+      <div class="weather-icon">{{ data.icon or "" }}</div>
       <div class="hi-lo">
-        Hi: {% if today_high is defined and today_high is not none %}{{ today_high }}°C{% else %}—°C{% endif %}
-        &nbsp; Lo: {% if today_low is defined and today_low is not none %}{{ today_low }}°C{% else %}—°C{% endif %}
+        Hi: —°C &nbsp; Lo: —°C
       </div>
     </div>
   </div>
