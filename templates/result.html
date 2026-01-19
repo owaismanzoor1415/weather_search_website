@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{{ city }} — Weather</title>
+  <title>{{ data.city }} — Weather</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     :root{ --nav-height:56px; --accent:#f05a24; }
@@ -34,7 +34,6 @@
       color:#fff;
       border: 1px solid rgba(255, 255, 255, 0.461);
       text-align:left;
-      
     }
 
     .city { 
@@ -64,7 +63,8 @@
       text-shadow:0 6px 12px rgba(0, 0, 0, 0.485); 
     }
 
-    .time { font-size:12px; 
+    .time { 
+      font-size:12px; 
       text-shadow:0 6px 12px rgba(0, 0, 0, 0.706); 
       margin-top:20px; 
     }
@@ -90,14 +90,16 @@
 
 <main>
   <div class="card" role="region" aria-live="polite">
-    <div class="city">{{ city }}</div>
+    <div class="city">{{ data.city }}</div>
 
     <div class="temp-row">
-      <div class="weather-icon">{% if icon %}{{ icon }}{% else %}🌙{% endif %}</div>
-      <div class="temp-value">{{ temp }}°C</div>
+      <div class="weather-icon">
+        {% if data.icon %}{{ data.icon }}{% else %}🌙{% endif %}
+      </div>
+      <div class="temp-value">{{ data.temp }}°C</div>
     </div>
 
-    <div class="time">{{ dt }}</div>
+    <div class="time">{{ data.desc }}</div>
     
     <a href="/" class="back">← Back to Search</a>
   </div>
