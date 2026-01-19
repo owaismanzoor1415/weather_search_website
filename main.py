@@ -140,19 +140,20 @@ def today(city):
         params={"q": city, "appid": API_KEY, "units": "metric"},
         timeout=8
     )
-
-    if r.status_code != 200:
-        return redirect(url_for("home"))
-
+    r.raise_for_status()
     js = r.json()
 
     data = {
         "city": city,
         "temp": round(js["main"]["temp"]),
-        "humidity": js["main"]["humidity"],
-        "wind": js["wind"]["speed"],
-        "desc": js["weather"][0]["description"].capitalize(),
-        "icon": weather_icon(js["weather"][0]["main"], js["weather"][0]["description"])
+        "today_high": round(js["main"]["temp_max"]),
+        "today_low": round(js["main"]["temp_min"]),
+        "desc": js["weather"][0]["description"],
+        "icon": weather_icon(
+            js["weather"][0]["main"],
+            js["weather"][0]["description"]
+        ),
+        "dt": datetime.now().strftime("%d %b %Y, %I:%M %p")
     }
 
     return render_template("today.html", data=data)
