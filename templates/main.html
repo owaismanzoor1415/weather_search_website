@@ -196,7 +196,7 @@ async function loadHistory(){
         <div class="small-desc">${escapeHtml(item.dt)}</div>
       </div>
     `).join('');
-
+    
     markersGroup.clearLayers();
     for (const it of arr) {
       (async () => {
