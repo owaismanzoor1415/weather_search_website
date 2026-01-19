@@ -148,6 +148,11 @@ def api_weather():
         "description": js["weather"][0]["description"]
     })
 
+@app.route("/weather/<city>")
+def weather_city(city):
+    return render_template("result.html", city=city)
+
+
 # ================= HISTORY =================
 @app.route("/api/history")
 def api_history():
