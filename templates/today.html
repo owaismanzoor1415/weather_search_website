@@ -8,7 +8,7 @@
 <style>
 
 :root{
-  --card-w: 420px;
+  --card-w: 520px; /* increased card width */
 }
 
 /* ===== PAGE ===== */
@@ -32,8 +32,9 @@ body{
 /* ===== WEATHER CARD ===== */
 .card{
   border-radius:25px;
-  width:380px;
-  padding:40px 30px;
+
+  width:520px;              /* increased width */
+  padding:60px 50px;       /* increased padding */
 
   background: linear-gradient(
     180deg,
@@ -53,19 +54,19 @@ body{
 .row-top{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
+  align-items:center;
+  gap:20px;
 }
 
 .left{
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:10px;
 }
 
 /* ===== CITY NAME ===== */
 .label{
-  font-size:28px;
+  font-size:36px;   /* increased */
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:1px;
@@ -73,14 +74,14 @@ body{
 
 /* ===== TEMPERATURE ===== */
 .temp-large{
-  font-size:58px;
+  font-size:72px;   /* increased */
   font-weight:900;
   line-height:1;
 }
 
 /* ===== DESCRIPTION ===== */
 .desc{
-  font-size:16px;
+  font-size:20px;   /* increased */
   opacity:0.95;
   text-transform:capitalize;
 }
@@ -95,20 +96,20 @@ body{
 
 /* ===== ICON ===== */
 .weather-icon{
-  font-size:56px;
+  font-size:80px;   /* increased icon size */
   filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45));
 }
-
 
 /* ===== BACK BUTTON ===== */
 .back{
   display:inline-block;
-  margin-top:18px;
-  padding:8px 14px;
+  margin-top:20px;
+  padding:10px 16px;
   background:rgba(0,0,0,0.6);
   color:#fff;
   border-radius:8px;
   text-decoration:none;
+  font-size:16px;
 }
 
 /* ===== MOBILE ===== */
@@ -116,14 +117,15 @@ body{
 
   .card{
     width:90%;
+    padding:30px;
   }
 
   .temp-large{
-    font-size:44px;
+    font-size:48px;
   }
 
   .weather-icon{
-    font-size:42px;
+    font-size:50px;
   }
 
 }
