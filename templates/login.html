@@ -2,37 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
+  <!-- Page Title -->
   <title>Login — SkyCast</title>
+
+  <!-- Mobile Responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 </head>
 
 <body>
 
-<div class="auth-container">
+  <div class="auth-container">
 
-  <!-- App Name -->
-  <h1 class="app-title">☁️ SkyCast</h1>
-  <p class="app-subtitle">Smart Weather Search</p>
+    <!-- SkyCast App Name -->
+    <h1 class="app-title">☁️ SkyCast</h1>
+    <p class="app-subtitle">Smart Weather Search</p>
 
-  <!-- Login Heading -->
-  <h2>Login</h2>
+    <!-- Login Heading -->
+    <h2>Login</h2>
 
-  {% if error %}
-    <div class="error">{{ error }}</div>
-  {% endif %}
+    <!-- Error Message -->
+    {% if error %}
+      <div class="error">
+        {{ error }}
+      </div>
+    {% endif %}
 
-  <form method="POST">
-    <input type="email" name="email" placeholder="Email address" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-  </form>
+    <!-- Login Form -->
+    <form method="POST">
 
-  <div class="auth-footer">
-    Don’t have an account?
-    <a href="{{ url_for('register') }}">Register</a>
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="Email address" 
+        required
+      >
+
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Password" 
+        required
+      >
+
+      <button type="submit">
+        Login
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      Don’t have an account?
+      <a href="{{ url_for('register') }}">
+        Register
+      </a>
+    </div>
+
   </div>
-
-</div>
 
 </body>
 </html>
