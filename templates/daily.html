@@ -11,7 +11,7 @@
     height:100%;
     margin:0;
     font-family:Inter,Arial,sans-serif;
-    background:url("https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?cs=srgb&dl=pexels-thatguycraig000-1563356.jpg&fm=jpg")
+    background:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")
       center/cover no-repeat fixed;
     color:black;
   }
@@ -144,20 +144,23 @@
 
               <div class="day-icon">{{ d.icon }}</div>
 
-              <div class="day-temp">
-                {% if d.label == 'TONIGHT' %}
-                  <div style="font-size:22px;">{{ d.lo }}°C <span style="font-size:12px; opacity:0.85;">Lo</span></div>
-                {% else %}
-                  <div style="font-size:22px;">{{ d.hi }}°C <span style="font-size:12px; opacity:0.85;">{{ d.lo }}°C</span></div>
-                {% endif %}
-              </div>
+               <div class="day-temp">
+                 {% if d.label == 'TONIGHT' %}
+                    <div>
+                      <span style="font-size:22px;">{{ d.lo }}°C</span>
+                      <div style="font-size:12px; opacity:0.85;">Low</div>
+                    </div>
+                 {% else %}
+                   <div>
+                     <span style="font-size:22px;">{{ d.hi }}°C</span>
+                     <span style="font-size:14px; opacity:0.85; margin-left:8px;">
+                       ↓ {{ d.lo }}°C
+                      </span>
+                    </div>
+                  {% endif %}
+                </div>
 
-              <div class="day-desc">
-                <div>{{ d.desc }}</div>
-                <div>{{ d.desc }}</div>
               </div>
-
-            </div>
           {% endfor %}
         {% else %}
           <div style="padding:24px 18px; color:white;">No forecast available.</div>
