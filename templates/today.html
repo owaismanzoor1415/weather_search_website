@@ -4,157 +4,206 @@
 <meta charset="utf-8" />
 <title>Today — {{ data.city }}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
 <style>
-  :root{
-    --card-w: 420px;
-  }
-  html,body{
-    height:100%;
-    margin:0;
-    font-family:Inter, Arial, sans-serif;
-    color:#fff;
+
+:root{
+  --card-w: 420px;
+}
+
+/* ===== PAGE ===== */
+html, body{
+  height:100%;
+  margin:0;
+  font-family: Inter, Arial, sans-serif;
+  color:#fff;
+}
+
+/* ===== BACKGROUND ===== */
+body{
+  background: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")
+  center/cover no-repeat fixed;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== WEATHER CARD ===== */
+.card{
+  border-radius:25px;
+  width:380px;
+  padding:40px 30px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(15,58,102,0.55) 0%,
+    rgba(20,91,138,0.35) 100%
+  );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+
+  border:1px solid rgba(255,255,255,0.35);
+}
+
+/* ===== TOP SECTION ===== */
+.row-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.left{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+/* ===== CITY NAME ===== */
+.label{
+  font-size:28px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+/* ===== TEMPERATURE ===== */
+.temp-large{
+  font-size:58px;
+  font-weight:900;
+  line-height:1;
+}
+
+/* ===== DESCRIPTION ===== */
+.desc{
+  font-size:16px;
+  opacity:0.95;
+  text-transform:capitalize;
+}
+
+/* ===== RIGHT SIDE ===== */
+.right{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== ICON ===== */
+.weather-icon{
+  font-size:56px;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45));
+}
+
+/* ===== HI LO ===== */
+.hi-lo{
+  margin-top:14px;
+  font-size:14px;
+
+  background: rgba(255,255,255,0.10);
+
+  padding:8px 14px;
+
+  border-radius:12px;
+}
+
+/* ===== BACK BUTTON ===== */
+.back{
+  display:inline-block;
+  margin-top:18px;
+  padding:8px 14px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  border-radius:8px;
+  text-decoration:none;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:480px){
+
+  .card{
+    width:90%;
   }
 
-  body{
-    background: url("https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?cs=srgb&dl=pexels-thatguycraig000-1563356.jpg&fm=jpg")
-    center/cover no-repeat fixed;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  .temp-large{
+    font-size:44px;
   }
 
-  .card {
-    border-radius:25px;
-    width:380px;
-    padding:100px 80px;
-    background: linear-gradient(180deg,#0f3a6648 0%, #145b8a28 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-    color:#fff;
-    border:1px solid rgba(255, 255, 255, 0.597);
+  .weather-icon{
+    font-size:42px;
   }
 
-  .label { 
-    font-size:50px; 
-    font-weight:800; 
-    margin-bottom:8px; 
-    text-transform:uppercase; 
-    text-shadow:0 3px 6px rgba(0, 0, 0, 0.622); 
-  }
+}
 
-  .row-top { 
-    display:flex; 
-    justify-content:space-between; 
-    align-items:flex-start; 
-    gap:12px; 
-  }
-
-  .left {
-    display:flex; 
-    flex-direction:column; 
-    gap:6px;
-  }
-
-  .label { 
-    font-size:30px; 
-    opacity:0.9; 
-    text-transform:uppercase; 
-    letter-spacing:1px; 
-  }
-
-  .temp-large { 
-    font-size:56px; 
-    font-weight:900; 
-    line-height:1; 
-    margin-top:6px; 
-  }
-
-  .desc { 
-    font-size:16px; 
-    opacity:0.95; 
-    text-transform:capitalize; 
-    margin-top:6px; 
-  }
-
-  .right {
-    display:flex; 
-    flex-direction:column; 
-    align-items:center; 
-    justify-content:center;
-    min-width:110px;
-  }
-
-  .weather-icon {
-    font-size:56px;
-    filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45));
-  }
-
-  .hi-lo {
-    margin-top:20px;
-    font-size:14px;
-    background: rgba(255,255,255,0.06);
-    padding:6px 10px;
-    border-radius:12px;
-    display:inline-block;
-  }
-
-  .dt { 
-    display:flex; 
-    justify-content:space-between; 
-    align-items:center; 
-    margin-top:14px; 
-    font-size:13px; 
-    opacity:0.95; 
-  }
-
-  .back { 
-    display:inline-block; 
-    margin-top:20px; 
-    padding:8px 12px; 
-    background:rgba(0, 0, 0, 0.587); 
-    color:#fff; 
-    border-radius:8px; 
-    text-decoration:none;  
-  }
-
-  @media (max-width:480px){
-    .card{ 
-      width:92%; 
-      padding:14px; 
-    }
-
-    .temp-large{ 
-      font-size:36px; 
-    }
-
-    .weather-icon{ 
-      font-size:40px; 
-    }
-  }
 </style>
 </head>
 
 <body>
 
-<div class="card" role="region" aria-live="polite">
+<div class="card">
+
   <div class="row-top">
+
     <div class="left">
-      <div class="label">{{ data.city }}</div>
-      <div class="temp-large">{{ data.temp }}°C</div>
-      <div class="desc">{{ data.desc or "Current" }}</div>
-      <div class="dt"></div>
-      <a href="/" class="back">← Back to Search</a>
+
+      <div class="label">
+        {{ data.city }}
+      </div>
+
+      <div class="temp-large">
+        {{ data.temp }}°C
+      </div>
+
+      <div class="desc">
+        {{ data.desc or "Current weather" }}
+      </div>
+
+      <a href="/" class="back">
+        ← Back to Search
+      </a>
+
     </div>
 
     <div class="right">
-      <div class="weather-icon">{{ data.icon or "" }}</div>
-      <div class="hi-lo">
-        Hi: —°C &nbsp; Lo: —°C
+
+      <div class="weather-icon">
+        {{ data.icon or "" }}
       </div>
+
+      <div class="hi-lo">
+        Hi: {{ data.hi }}°C &nbsp;&nbsp; Lo: {{ data.lo }}°C
+      </div>
+
     </div>
+
   </div>
+
 </div>
+
+
+<!-- OPTIONAL: Dynamic Background -->
+<script>
+
+const weather = "{{ data.desc }}".toLowerCase();
+
+if(weather.includes("rain")){
+  document.body.style.background =
+  "url('https://images.unsplash.com/photo-1519692933481-e162a57d6721') center/cover no-repeat fixed";
+}
+else if(weather.includes("cloud")){
+  document.body.style.background =
+  "url('https://images.unsplash.com/photo-1499346030926-9a72daac6c63') center/cover no-repeat fixed";
+}
+else if(weather.includes("clear")){
+  document.body.style.background =
+  "url('https://images.unsplash.com/photo-1502082553048-f009c37129b9') center/cover no-repeat fixed";
+}
+
+</script>
 
 </body>
 </html>
