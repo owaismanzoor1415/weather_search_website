@@ -127,7 +127,7 @@ def api_weather():
         "dt": datetime.utcnow()
     })
 
-    # 🔴 IMPORTANT: redirect for UI
+    # redirect for UI
     return jsonify({
         "redirect": url_for("today", city=city)
     })
@@ -233,4 +233,4 @@ def daily(city):
 
 # ================= RUN =================
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True,host="0.0.0.0", port=5000)
