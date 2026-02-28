@@ -48,52 +48,6 @@ def weather_icon(main, desc, dt=None, sunrise=None, sunset=None):
         return "🌫️"
     return "☀️"
 
-# ================= REGISTER =================
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        email = request.form.get("email", "").lower().strip()
-        password = request.form.get("password")
-        confirm = request.form.get("confirm")
-
-        if not email or not password or not confirm:
-            return render_template("register.html", error="All fields required")
-        if password != confirm:
-            return render_template("register.html", error="Passwords do not match")
-        if users.find_one({"email": email}):
-            return render_template("register.html", error="User already exists")
-
-        users.insert_one({
-            "email": email,
-            "password": generate_password_hash(password),
-            "created_at": datetime.utcnow()
-        })
-        return redirect(url_for("login"))
-
-    return render_template("register.html")
-
-# ================= LOGIN =================
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email", "").lower().strip()
-        password = request.form.get("password")
-
-        user = users.find_one({"email": email})
-        if not user or not check_password_hash(user["password"], password):
-            return render_template("login.html", error="Invalid credentials")
-
-        session["user_id"] = str(user["_id"])
-        session["email"] = user["email"]
-        return redirect(url_for("home"))
-
-    return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-
 # ================= HOME =================
 @app.route("/")
 def home():
