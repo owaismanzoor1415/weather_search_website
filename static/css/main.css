@@ -44,6 +44,8 @@ gap:10px;
 .menu-btn{
 font-size:26px;
 cursor:pointer;
+position:relative;
+z-index:3000;
 }
 
 /* BRAND */
@@ -238,11 +240,15 @@ color:#fff !important;
 position:fixed;
 top:0;
 left:-260px;
+
 width:260px;
 height:100vh;
+
 background:#111;
-padding:60px 20px 20px 20px;
+padding:60px 20px 20px;
+
 transition:left 0.3s ease;
+
 z-index:2000;
 }
 

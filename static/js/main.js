@@ -278,8 +278,16 @@ overlay.classList.toggle("active");
 
 function closeMenu(){
 
-document.getElementById("sidebar").classList.remove("active");
-document.getElementById("overlay").classList.remove("active");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+if(sidebar){
+sidebar.classList.remove("active");
+}
+
+if(overlay){
+overlay.classList.remove("active");
+}
 
 }
 
