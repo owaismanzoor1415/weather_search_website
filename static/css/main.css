@@ -5,6 +5,8 @@ color:#fff;
 background:url('https://thumbs.dreamstime.com/b/incredibly-beautiful-sunset-sun-lake-sunrise-landscape-panorama-nature-sky-amazing-colorful-clouds-fantasy-design-115177001.jpg') center/cover no-repeat fixed;
 }
 
+/* HERO */
+
 .hero{
 min-height:35vh;
 background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2));
@@ -12,6 +14,8 @@ display:flex;
 flex-direction:column;
 padding:18px 20px;
 }
+
+/* TOP BAR */
 
 .topbar{
 display:flex;
@@ -22,10 +26,35 @@ margin:auto;
 width:100%;
 }
 
+/* left side (menu + logo) */
+
+.header-left{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.menu-btn{
+font-size:26px;
+cursor:pointer;
+}
+
 .brand{
 font-weight:900;
 font-size:25px;
 }
+
+/* install button */
+
+.install-btn{
+background:#16a34a;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+font-weight:700;
+}
+
+/* buttons */
 
 .top-buttons{
 display:flex;
@@ -38,24 +67,20 @@ text-decoration:none;
 font-weight:800;
 font-size:13px;
 letter-spacing:.6px;
-
 padding:8px 16px;
-
 border-radius:20px;
-
 background:rgba(255,255,255,0.12);
 backdrop-filter:blur(10px);
-
 border:1px solid rgba(255,255,255,0.2);
-
 box-shadow:0 6px 18px rgba(0,0,0,0.6);
-
 transition:all .25s ease;
 }
 
 .top-buttons a:hover{
 background:rgba(255,255,255,0.25);
 }
+
+/* SEARCH */
 
 .hero-center{
 display:flex;
@@ -76,9 +101,7 @@ margin-left:105px;
 .search-input{
 background:rgba(255,255,255,0.95);
 border-radius:12px;
-
 padding:12px 14px;
-
 box-shadow:0 8px 22px rgba(0,0,0,0.4);
 }
 
@@ -99,6 +122,8 @@ color:#1e3a8a;
 box-shadow:0 6px 18px rgb(0,0,0);
 }
 
+/* CONTENT */
+
 .content{
 max-width:1100px;
 margin:22px auto;
@@ -111,6 +136,8 @@ font-weight:800;
 margin:18px 0;
 }
 
+/* HISTORY */
+
 .history{
 display:flex;
 gap:12px;
@@ -121,17 +148,12 @@ flex-wrap:wrap;
 width:240px;
 padding:18px;
 border-radius:16px;
-
 background:rgba(255,255,255,0.12);
 backdrop-filter:blur(14px);
 -webkit-backdrop-filter:blur(14px);
-
 border:1px solid rgba(255,255,255,0.25);
-
 box-shadow:0 10px 28px rgba(0,0,0,0.45);
-
 cursor:pointer;
-
 transition:transform .25s ease, box-shadow .25s ease;
 }
 
@@ -139,6 +161,25 @@ transition:transform .25s ease, box-shadow .25s ease;
 transform:translateY(-5px);
 box-shadow:0 18px 40px rgba(0,0,0,0.6);
 }
+
+.city{
+font-size:18px;
+font-weight:700;
+}
+
+.mid-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin:10px 0;
+}
+
+.temp{
+font-size:28px;
+font-weight:700;
+}
+
+/* MAP */
 
 #owmMap{
 width:100%;
@@ -148,7 +189,6 @@ border-radius:12px;
 border:2px solid rgba(255,255,255,0.45);
 box-shadow:0 10px 26px rgba(0,0,0,0.45);
 }
-
 
 .map-search-box{
 margin-top:12px;
@@ -181,36 +221,43 @@ background:#0d9488 !important;
 color:#fff !important;
 }
 
-.city{
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+top:0;
+left:-260px;
+
+width:250px;
+height:100%;
+
+background:#111;
+padding:20px;
+
+transition:left 0.3s ease;
+
+z-index:2000;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+margin:18px 0;
 font-size:18px;
-font-weight:700;
 }
 
-.mid-row{
-display:flex;
-align-items:center;
-gap:10px;
-margin:10px 0;
+.sidebar.active{
+left:0;
 }
 
-.temp{
-font-size:28px;
-font-weight:700;
-}
-
-/* ---------- MOBILE RESPONSIVE ---------- */
+/* MOBILE */
 
 @media (max-width:768px){
 
 .topbar{
-flex-direction:column;
-gap:12px;
-text-align:center;
-}
-
-.top-buttons{
-flex-wrap:wrap;
-justify-content:center;
+flex-direction:row;
+justify-content:space-between;
 }
 
 .hero-center{
@@ -250,4 +297,24 @@ flex-direction:column;
 width:100%;
 }
 
+}
+
+
+.overlay{
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.45);
+
+display:none;
+
+z-index:1500;
+}
+
+.overlay.active{
+display:block;
 }

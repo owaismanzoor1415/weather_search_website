@@ -9,6 +9,7 @@ L.tileLayer(
 { maxZoom: 19 }
 ).addTo(map);
 
+
 /* ---------------- SEARCH ---------------- */
 
 async function refreshAndOpen(city, view){
@@ -46,10 +47,13 @@ alert("Network error");
 
 }
 
+
 /* Search button */
 
-document.getElementById("searchBtn")
-.addEventListener("click", () => {
+const searchBtn = document.getElementById("searchBtn");
+
+if(searchBtn){
+searchBtn.addEventListener("click", () => {
 
 const city =
 document.getElementById("cityInput").value;
@@ -57,15 +61,21 @@ document.getElementById("cityInput").value;
 refreshAndOpen(city,"");
 
 });
+}
+
 
 /* Enter key search */
 
-document.getElementById("mapSearchInput")
-.addEventListener("keydown",(e)=>{
+const mapSearchInput = document.getElementById("mapSearchInput");
+
+if(mapSearchInput){
+mapSearchInput.addEventListener("keydown",(e)=>{
 if(e.key === "Enter"){
 document.getElementById("mapSearchBtn").click();
 }
 });
+}
+
 
 /* ---------------- HISTORY ---------------- */
 
@@ -111,6 +121,7 @@ document.getElementById("historyList").innerHTML =
 
 loadHistory();
 
+
 /* Click history */
 
 document.addEventListener("click",(e)=>{
@@ -125,6 +136,7 @@ refreshAndOpen(city,"");
 
 });
 
+
 /* ---------------- HEADER BUTTONS ---------------- */
 
 function headerAction(view){
@@ -136,29 +148,39 @@ refreshAndOpen(city,view);
 
 }
 
-document.getElementById("btn-today")
-.addEventListener("click",(e)=>{
+const todayBtn = document.getElementById("btn-today");
+const hourlyBtn = document.getElementById("btn-hourly");
+const dailyBtn = document.getElementById("btn-daily");
+
+if(todayBtn){
+todayBtn.addEventListener("click",(e)=>{
 e.preventDefault();
 headerAction("today");
 });
+}
 
-document.getElementById("btn-hourly")
-.addEventListener("click",(e)=>{
+if(hourlyBtn){
+hourlyBtn.addEventListener("click",(e)=>{
 e.preventDefault();
 headerAction("hourly");
 });
+}
 
-document.getElementById("btn-daily")
-.addEventListener("click",(e)=>{
+if(dailyBtn){
+dailyBtn.addEventListener("click",(e)=>{
 e.preventDefault();
 headerAction("daily");
 });
+}
 
 
 /* ---------------- MAP SEARCH ---------------- */
 
-document.getElementById("mapSearchBtn")
-.addEventListener("click", async () => {
+const mapSearchBtn = document.getElementById("mapSearchBtn");
+
+if(mapSearchBtn){
+
+mapSearchBtn.addEventListener("click", async () => {
 
 const city =
 document.getElementById("mapSearchInput").value;
@@ -205,10 +227,16 @@ alert("Search failed");
 
 });
 
+}
+
+
 /* ---------------- LOCATE ME ---------------- */
 
-document.getElementById("locateMeBtn")
-.addEventListener("click", () => {
+const locateBtn = document.getElementById("locateMeBtn");
+
+if(locateBtn){
+
+locateBtn.addEventListener("click", () => {
 
 if(!navigator.geolocation){
 alert("Geolocation not supported");
@@ -232,3 +260,60 @@ L.marker([lat,lon])
 });
 
 });
+
+}
+
+
+/* ---------------- SIDEBAR MENU ---------------- */
+
+function toggleMenu(){
+
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+sidebar.classList.toggle("active");
+overlay.classList.toggle("active");
+
+}
+
+
+/* ---------------- INSTALL APP ---------------- */
+
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+
+e.preventDefault();
+
+deferredPrompt = e;
+
+const installBtn = document.getElementById("installBtn");
+
+if(installBtn){
+installBtn.style.display="block";
+}
+
+});
+
+const installBtn = document.getElementById("installBtn");
+
+if(installBtn){
+
+installBtn.addEventListener("click", async ()=>{
+
+if(!deferredPrompt) return;
+
+deferredPrompt.prompt();
+
+const choice =
+await deferredPrompt.userChoice;
+
+if(choice.outcome === "accepted"){
+console.log("App installed");
+}
+
+deferredPrompt=null;
+
+});
+
+}
