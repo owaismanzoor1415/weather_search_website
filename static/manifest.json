@@ -1,0 +1,21 @@
+{
+  "name": "SkyCast Weather",
+  "short_name": "SkyCast",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/static/images/icon-192.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/icon-512.png",
+    "sizes": "96x96",
+      "type": "image/png"
+    }
+  ]
+}
