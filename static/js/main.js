@@ -299,40 +299,48 @@ refreshAndOpen(city, view);
 /* ---------------- INSTALL APP ---------------- */
 
 let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt",(e)=>{
+/* hide button initially */
+
+installBtn.style.display = "none";
+
+/* detect install availability */
+
+window.addEventListener("beforeinstallprompt", (e) => {
 
 e.preventDefault();
 
 deferredPrompt = e;
 
-const installBtn = document.getElementById("installBtn");
-
-if(installBtn){
-installBtn.style.display="block";
-}
+installBtn.style.display = "block";
 
 });
 
-const installBtn = document.getElementById("installBtn");
+/* install click */
 
-if(installBtn){
-
-installBtn.addEventListener("click", async ()=>{
+installBtn.addEventListener("click", async () => {
 
 if(!deferredPrompt) return;
 
 deferredPrompt.prompt();
 
-const choice =
-await deferredPrompt.userChoice;
+const { outcome } = await deferredPrompt.userChoice;
 
-if(choice.outcome === "accepted"){
-console.log("App installed");
+if(outcome === "accepted"){
+
+installBtn.style.display = "none";
+
 }
 
-deferredPrompt=null;
+deferredPrompt = null;
 
 });
 
-}
+/* hide button if app already installed */
+
+window.addEventListener("appinstalled", () => {
+
+installBtn.style.display = "none";
+
+});
