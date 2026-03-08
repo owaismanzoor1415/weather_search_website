@@ -234,34 +234,38 @@ background:#0d9488 !important;
 color:#fff !important;
 }
 
-/* SIDEBAR */
 
+/* side bar */
 .sidebar{
 position:fixed;
 top:0;
-left:-260px;
+left:-220px;          /* hide outside screen */
 
-width:260px;
+width:200px;          /* smaller sidebar */
 height:100vh;
 
 background:#111;
-padding:60px 20px 20px;
+padding:70px 20px;
 
 transition:left 0.3s ease;
 
 z-index:2000;
 }
 
+/* when opened */
+.sidebar.active{
+left:0;
+}
+
+/* menu items */
+
 .sidebar a{
 display:block;
 color:white;
 text-decoration:none;
-margin:18px 0;
-font-size:18px;
-}
-
-.sidebar.active{
-left:0;
+margin:20px 0;
+font-size:16px;
+font-weight:500;
 }
 
 /* OVERLAY */
@@ -293,6 +297,24 @@ padding:15px;
 font-size:20px;
 }
 
+/* hamburger always visible */
+
+.menu-btn{
+display:block;
+font-size:26px;
+cursor:pointer;
+position:relative;
+z-index:3000;
+}
+
+/* hide desktop buttons */
+
+.top-buttons{
+display:none;
+}
+
+/* search */
+
 .hero-center{
 justify-content:center;
 padding:18px 0;
@@ -313,8 +335,12 @@ width:100%;
 text-align:center;
 }
 
+/* weather cards */
+
 .history{
+display:grid;
 grid-template-columns:1fr 1fr;
+gap:12px;
 }
 
 .card{
@@ -322,10 +348,14 @@ width:100%;
 padding:14px;
 }
 
+/* map */
+
 #owmMap{
 height:220px;
 margin-top:12px;
 }
+
+/* map search */
 
 .map-search-box{
 flex-direction:column;
@@ -336,12 +366,11 @@ gap:8px;
 width:100%;
 }
 
-.top-buttons{
-display:none;
-}
+/* sidebar spacing */
 
-.menu-btn{
-display:block;
+.sidebar{
+width:200px;
+padding-top:70px;
 }
 
 }
