@@ -1,0 +1,329 @@
+/* ===== PAGE ===== */
+
+body{
+margin:0;
+font-family:Inter,Arial,sans-serif;
+color:white;
+
+background:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")
+center/cover no-repeat fixed;
+}
+
+/* ===== HEADER ===== */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:35px 60px;
+
+font-weight:900;
+}
+
+.title{
+font-size:28px;
+letter-spacing:1px;
+}
+
+.city{
+font-size:18px;
+opacity:.9;
+}
+
+/* ===== FORECAST LIST ===== */
+
+.slider{
+
+max-width:900px;
+
+margin:auto;
+
+display:flex;
+flex-direction:column;
+
+gap:18px;
+
+padding:20px 40px;
+
+}
+
+/* ===== DAY CARD ===== */
+
+.slide{
+
+display:flex;
+align-items:center;
+
+gap:30px;
+
+padding:22px;
+
+border-radius:18px;
+
+/* improved glass color */
+
+background: rgba(20,40,70,0.7);
+
+backdrop-filter: blur(6px);
+
+border:1px solid rgba(255,255,255,0.25);
+
+transition: all .3s ease;
+
+cursor:pointer;
+
+}
+
+/* ===== HOVER EFFECT ===== */
+
+.slide:hover{
+
+transform: scale(1.03);
+
+background: rgba(40,90,140,0.85);
+
+box-shadow:0 12px 35px rgba(0,0,0,0.45);
+
+}
+
+/* ===== DAY ===== */
+
+.day{
+
+font-size:20px;
+font-weight:800;
+
+width:80px;
+
+color:#ffffff;
+
+}
+
+/* ===== DATE ===== */
+
+.date{
+
+font-size:14px;
+
+opacity:.85;
+
+width:70px;
+
+}
+
+/* ===== WEATHER ICON ===== */
+
+.icon{
+
+font-size:32px;
+
+width:60px;
+
+}
+
+/* ===== TEMPERATURE ===== */
+
+.temp{
+
+font-size:32px;
+
+font-weight:900;
+
+width:120px;
+
+color:#ffffff;
+
+}
+
+/* ===== LOW TEMP ===== */
+
+.low{
+
+font-size:18px;
+
+color:#cde4ff;
+
+}
+
+/* ===== DESCRIPTION ===== */
+
+.desc{
+
+flex:1;
+
+font-size:18px;
+
+color:#e8f3ff;
+
+}
+
+/* ===== BACK BUTTON ===== */
+
+.back{
+
+display:block;
+
+margin:40px auto;
+
+padding:12px 20px;
+
+background:rgba(0,0,0,.7);
+
+border-radius:10px;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:700;
+
+width:120px;
+
+text-align:center;
+
+transition:.3s;
+
+}
+
+/* ===== BACK BUTTON HOVER ===== */
+
+.back:hover{
+
+background:black;
+
+transform:translateY(-2px);
+
+box-shadow:0 10px 25px rgba(0,0,0,0.6);
+
+}
+
+
+/* ================= MOBILE RESPONSIVE ================= */
+
+@media (max-width: 900px){
+
+.header{
+padding:25px 30px;
+}
+
+.title{
+font-size:22px;
+}
+
+.city{
+font-size:16px;
+}
+
+/* slider padding smaller */
+
+.slider{
+padding:20px;
+}
+
+/* forecast card */
+
+.slide{
+
+flex-wrap:wrap;
+
+gap:12px;
+
+padding:18px;
+
+}
+
+/* day name */
+
+.day{
+font-size:18px;
+width:auto;
+}
+
+/* date */
+
+.date{
+width:auto;
+}
+
+/* icon */
+
+.icon{
+font-size:28px;
+}
+
+/* temperature */
+
+.temp{
+font-size:26px;
+width:auto;
+}
+
+/* low temperature */
+
+.low{
+font-size:16px;
+}
+
+/* description */
+
+.desc{
+width:100%;
+font-size:16px;
+margin-top:6px;
+}
+
+}
+
+
+/* ================= SMALL PHONES ================= */
+
+@media (max-width: 500px){
+
+.header{
+flex-direction:column;
+align-items:flex-start;
+gap:6px;
+}
+
+.title{
+font-size:20px;
+}
+
+.city{
+font-size:14px;
+}
+
+/* cards full width */
+
+.slider{
+padding:15px;
+}
+
+.slide{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:10px;
+
+}
+
+/* center icon */
+
+.icon{
+font-size:30px;
+}
+
+/* bigger temperature */
+
+.temp{
+font-size:28px;
+}
+
+.desc{
+font-size:15px;
+}
+
+}

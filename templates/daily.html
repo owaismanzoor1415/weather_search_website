@@ -1,221 +1,75 @@
 <!doctype html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="utf-8" />
-  <title>Daily — {{ city }}</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <style>
-    :root {
-      --panel-bg: rgba(255,255,255,0.98);
-      --muted:#6b7780;
-      --hr:#e6e9ee;
-    }
+<title>Daily — {{ city }}</title>
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")
-        center / cover no-repeat fixed;
-      color: black;
-    }
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/daily.css') }}">
 
-    .wrap {
-      max-width: 1100px;
-      margin: 88px auto;
-      padding: 0 18px;
-    }
-
-    .panel {
-      background: linear-gradient(180deg,#0f3a6636 0%, #145b8a33 100%);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 25px;
-      padding: 10px 0;
-      box-shadow: 0 6px 30px rgb(0, 0, 0);
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 30px 40px;
-    }
-
-    .panel-head .title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: white;
-    }
-
-    .panel-head .date {
-      font-size: 16px;
-      font-weight: 900;
-      color: white;
-    }
-
-    .list {
-      padding: 8px 0;
-    }
-
-    .day-row {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      color: white;
-    }
-
-    .day-row:last-child {
-      border-bottom: none;
-    }
-
-    .day-left {
-      width: 90px;
-      font-weight: 900;
-    }
-
-    .day-icon {
-      width: 50px;
-      text-align: center;
-      font-size: 25px;
-    }
-
-    .day-temp {
-      width: 150px;
-      text-align: center;
-      font-weight: 900;
-      font-size: 25px;
-      color: white;
-    }
-
-    .day-desc {
-      flex: 1;
-      color: white;
-    }
-
-    .day-desc div:first-child {
-      font-weight: 700;
-    }
-
-    .day-desc div:last-child {
-      margin-top: 6px;
-      font-size: 13px;
-      opacity: 0.85;
-    }
-
-    .back {
-      display: inline-block;
-      margin: 20px;
-      padding: 8px 12px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-
-    @media (max-width:720px) {
-      .panel-head {
-        padding: 12px;
-      }
-      .day-row {
-        padding: 12px;
-      }
-    }
-  </style>
 </head>
 
 <body>
 
-  <div class="wrap">
+<!-- HEADER -->
 
-    <div class="panel">
+<div class="header">
 
-      <div class="panel-head">
-        <div class="title">5-DAY WEATHER FORECAST</div>
-        <div class="date">{{ city|capitalize }}</div>
-      </div>
+<div class="title">
+5-DAY WEATHER FORECAST
+</div>
 
-      <div class="list">
+<div class="city">
+{{ city|capitalize }}
+</div>
 
-        {% if days %}
+</div>
 
-          {% for d in days %}
+<!-- SLIDER -->
 
-            <div class="day-row" role="article" aria-label="forecast {{ d.label }}">
+<div class="slider" id="slider">
 
-              <div class="day-left">
-                <div style="font-size:13px; opacity:0.85;">
-                  {{ d.date }}
-                </div>
-                <div style="margin-top:6px;">
-                  {{ d.label }}
-                </div>
-              </div>
+{% for d in days %}
 
-              <div class="day-icon">
-                {{ d.icon }}
-              </div>
+<div class="slide">
 
-              <div class="day-temp">
+<div class="day">
+{{ d.label }}
+</div>
 
-                {% if d.label == 'TONIGHT' %}
+<div class="date">
+{{ d.date }}
+</div>
 
-                  <div>
-                    <span style="font-size:22px;">
-                      {{ d.lo }}°C
-                    </span>
-                    <div style="font-size:12px; opacity:0.85;">
-                      Low
-                    </div>
-                  </div>
+<div class="icon">
+{{ d.icon }}
+</div>
 
-                {% else %}
+<div class="temp">
+{{ d.hi }}°C
+</div>
 
-                  <div>
-                    <span style="font-size:22px;">
-                      {{ d.hi }}°C
-                    </span>
+<div class="low">
+↓ {{ d.lo }}°C
+</div>
 
-                    <span style="font-size:14px; opacity:0.85; margin-left:8px;">
-                      ↓ {{ d.lo }}°C
-                    </span>
-                  </div>
+<div class="desc">
+{{ d.desc }}
+</div>
 
-                {% endif %}
+</div>
 
-              </div>
+{% endfor %}
 
-              <div class="day-desc">
-                <div>{{ d.desc }}</div>
-                <div>{{ d.desc }}</div>
-              </div>
+</div>
 
-            </div>
+<!-- BACK BUTTON -->
 
-          {% endfor %}
+<a href="/" id="backBtn" class="back">← Back</a>
 
-        {% else %}
-
-          <div style="padding:24px 18px; color:white;">
-            No forecast available.
-          </div>
-
-        {% endif %}
-
-        <a href="/" class="back">
-          ← Back to Search
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
+<script src="{{ url_for('static', filename='js/daily.js') }}"></script>
 
 </body>
+
 </html>

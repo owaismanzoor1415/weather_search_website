@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, url_for, redirect
 from pymongo import MongoClient
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 from collections import defaultdict, Counter
@@ -161,18 +161,26 @@ def hourly(city):
     r.raise_for_status()
     js = r.json()
 
+    tz_offset = js["city"]["timezone"]
+
     hourly_data = []
 
-    for it in js["list"][:12]:
+    for i, it in enumerate(js["list"][:12]):
+
+        local_time = (
+            _dt.utcfromtimestamp(it["dt"]) +
+            timedelta(seconds=tz_offset)
+        )
 
         hourly_data.append({
-            "time": _dt.fromtimestamp(it["dt"]).strftime("%I:%M %p").lstrip("0"),
+            "time": "NOW" if i == 0 else local_time.strftime("%I:%M %p").lstrip("0"),
             "temp": round(it["main"]["temp"]),
             "humidity": it["main"]["humidity"],
             "icon": weather_icon(
                 it["weather"][0]["main"],
                 it["weather"][0]["description"]
-            )
+            ),
+            "is_now": i == 0
         })
 
     return render_template(
