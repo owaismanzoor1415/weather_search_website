@@ -20,30 +20,66 @@
 <body>
 <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
 
+<div id="sidebar" class="sidebar">
+
+<a href="#" onclick="headerAction('today')">
+Today Weather
+</a>
+
+<a href="#" onclick="headerAction('hourly')">
+Hourly Weather
+</a>
+
+<a href="#" onclick="headerAction('daily')">
+Daily Weather
+</a>
+
+</div>
+
+<div id="overlay" class="overlay"
+onclick="toggleMenu()"></div>
+
 <header class="hero">
 
 <div class="topbar">
 
 <div class="header-left">
 
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
+<span class="menu-btn" onclick="toggleMenu()">☰</span>
 
 <div class="brand">☁ SkyCast</div>
 
 </div>
 
-<div class="install-btn">Install App</div>
 
-</div>
+<div class="top-buttons">
 
-<div class="sidebar" id="sidebar">
-
-<a href="/">Home</a>
 <a href="#" id="btn-today">Today Weather</a>
+
 <a href="#" id="btn-hourly">Hourly Weather</a>
+
 <a href="#" id="btn-daily">Daily Weather</a>
 
 </div>
+
+
+<button id="installBtn" class="install-btn">
+Install App
+</button>
+
+</div>
+
+<div id="sidebar" class="sidebar">
+
+<a href="#" onclick="menuAction('today')">Today Weather</a>
+
+<a href="#" onclick="menuAction('hourly')">Hourly Weather</a>
+
+<a href="#" onclick="menuAction('daily')">Daily Weather</a>
+
+</div>
+
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
 
 <div class="hero-center">
 

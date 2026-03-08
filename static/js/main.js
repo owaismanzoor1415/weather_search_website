@@ -276,6 +276,25 @@ overlay.classList.toggle("active");
 
 }
 
+function closeMenu(){
+
+document.getElementById("sidebar").classList.remove("active");
+document.getElementById("overlay").classList.remove("active");
+
+}
+
+/* when clicking sidebar item */
+
+function menuAction(view){
+
+closeMenu();
+
+const city = document.getElementById("cityInput").value;
+
+refreshAndOpen(city, view);
+
+}
+
 
 /* ---------------- INSTALL APP ---------------- */
 
