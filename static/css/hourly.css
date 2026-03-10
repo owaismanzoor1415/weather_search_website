@@ -232,3 +232,68 @@ font-size:20px;
 }
 
 }
+
+
+/* ---------- MOBILE RESPONSIVE ---------- */
+
+@media (max-width:768px){
+
+.header{
+font-size:28px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.container{
+display:flex;
+overflow-x:auto;
+gap:14px;
+padding:10px 12px;
+scroll-snap-type:x mandatory;
+}
+
+.hour-box{
+min-width:120px;
+padding:14px;
+border-radius:16px;
+scroll-snap-align:start;
+}
+
+.time{
+font-size:14px;
+}
+
+.temp{
+font-size:20px;
+}
+
+.icon{
+font-size:24px;
+}
+
+.back{
+position:fixed;
+bottom:20px;
+left:20px;
+}
+
+}
+
+/* extra small phones */
+
+@media (max-width:480px){
+
+.hour-box{
+min-width:110px;
+padding:12px;
+}
+
+.temp{
+font-size:18px;
+}
+
+.icon{
+font-size:22px;
+}
+
+}

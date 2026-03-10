@@ -1,35 +1,27 @@
-document.addEventListener("DOMContentLoaded", () => {
+const weather = (document.body.dataset.weather || "").toLowerCase()
 
-/* ===== AUTO SCROLL TO CURRENT HOUR ===== */
+const backgrounds = {
 
-const current = document.querySelector(".hour-box.now");
+clear: "https://images.pexels.com/photos/912110/pexels-photo-912110.jpeg",
 
-if(current){
+clouds: "https://images.pexels.com/photos/531767/pexels-photo-531767.jpeg",
 
-current.scrollIntoView({
-behavior:"smooth",
-inline:"center",
-block:"nearest"
-});
+rain: "https://images.pexels.com/photos/110874/pexels-photo-110874.jpeg",
+
+snow: "https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg",
+
+mist: "https://images.pexels.com/photos/167699/pexels-photo-167699.jpeg"
 
 }
 
-/* ===== DYNAMIC WEATHER BACKGROUND ===== */
+let bg = backgrounds.clouds
 
-const weather = document.body.dataset.weather?.toLowerCase() || "";
+if(weather.includes("clear")) bg = backgrounds.clear
+else if(weather.includes("cloud")) bg = backgrounds.clouds
+else if(weather.includes("rain")) bg = backgrounds.rain
+else if(weather.includes("snow")) bg = backgrounds.snow
+else if(weather.includes("mist") || weather.includes("fog") || weather.includes("haze")) bg = backgrounds.mist
 
-let bg = "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg";
-
-if(weather.includes("rain")){
-bg = "https://images.unsplash.com/photo-1519692933481-e162a57d6721";
-}
-else if(weather.includes("cloud")){
-bg = "https://images.unsplash.com/photo-1499346030926-9a72daac6c63";
-}
-else if(weather.includes("clear")){
-bg = "https://images.unsplash.com/photo-1472214103451-9374bd1c798e";
-}
-
-document.body.style.backgroundImage = `url(${bg})`;
-
-});
+document.body.style.backgroundImage = `url(${bg})`
+document.body.style.backgroundSize = "cover"
+document.body.style.backgroundPosition = "center"

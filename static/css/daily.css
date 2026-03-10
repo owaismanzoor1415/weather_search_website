@@ -1,12 +1,21 @@
 /* ===== PAGE ===== */
 
+html, body{
+height:100%;
+overflow-x:hidden;
+scroll-behavior:smooth;
+}
+
 body{
 margin:0;
 font-family:Inter,Arial,sans-serif;
 color:white;
 
 background:url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")
-center/cover no-repeat fixed;
+center/cover no-repeat;
+
+min-height:100vh;
+overflow-y:auto;
 }
 
 /* ===== HEADER ===== */
@@ -27,8 +36,8 @@ letter-spacing:1px;
 }
 
 .city{
-font-size:18px;
-opacity:.9;
+font-size:30px;
+opacity:2;
 }
 
 /* ===== FORECAST LIST ===== */
@@ -46,6 +55,8 @@ gap:18px;
 
 padding:20px 40px;
 
+overflow-y:auto;
+
 }
 
 /* ===== DAY CARD ===== */
@@ -61,17 +72,19 @@ padding:22px;
 
 border-radius:18px;
 
-/* improved glass color */
+background: rgba(25,55,95,0.65);
 
-background: rgba(20,40,70,0.7);
-
-backdrop-filter: blur(6px);
+backdrop-filter: blur(12px);
 
 border:1px solid rgba(255,255,255,0.25);
 
-transition: all .3s ease;
+transition: all .35s ease;
 
 cursor:pointer;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.35);
+
+animation:fadeUp .6s ease forwards;
 
 }
 
@@ -79,11 +92,11 @@ cursor:pointer;
 
 .slide:hover{
 
-transform: scale(1.03);
+transform: translateY(-6px) scale(1.02);
 
 background: rgba(40,90,140,0.85);
 
-box-shadow:0 12px 35px rgba(0,0,0,0.45);
+box-shadow:0 18px 45px rgba(0,0,0,0.55);
 
 }
 
@@ -133,6 +146,8 @@ font-weight:900;
 width:120px;
 
 color:#ffffff;
+
+text-shadow:0 0 10px rgba(255,255,255,0.4);
 
 }
 
@@ -198,6 +213,21 @@ box-shadow:0 10px 25px rgba(0,0,0,0.6);
 
 }
 
+/* ===== FADE ANIMATION ===== */
+
+@keyframes fadeUp{
+
+0%{
+opacity:0;
+transform:translateY(20px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+}
 
 /* ================= MOBILE RESPONSIVE ================= */
 
@@ -275,7 +305,6 @@ margin-top:6px;
 
 }
 
-
 /* ================= SMALL PHONES ================= */
 
 @media (max-width: 500px){
@@ -324,6 +353,25 @@ font-size:28px;
 
 .desc{
 font-size:15px;
+}
+
+}
+
+@media (max-width:768px){
+
+.day-row{
+flex-direction:column;
+align-items:flex-start;
+gap:6px;
+padding:14px;
+}
+
+.temp{
+font-size:20px;
+}
+
+.desc{
+font-size:14px;
 }
 
 }

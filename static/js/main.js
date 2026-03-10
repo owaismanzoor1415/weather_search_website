@@ -352,3 +352,29 @@ window.addEventListener("appinstalled", () => {
 installBtn.style.display = "none";
 
 });
+
+
+
+const weather = (document.body.dataset.weather || "").toLowerCase()
+
+const rain = document.querySelector(".rain")
+const snow = document.querySelector(".snow")
+const clouds = document.querySelector(".clouds")
+
+if(weather.includes("rain")){
+
+rain.style.opacity = "1"
+
+}
+
+else if(weather.includes("snow")){
+
+snow.style.opacity = "1"
+
+}
+
+else{
+
+clouds.style.opacity = ".5"
+
+}

@@ -10,7 +10,7 @@ href="{{ url_for('static', filename='css/hourly.css') }}">
 
 </head>
 
-<body data-weather="{{ hourly[0].desc if hourly else '' }}">
+<body data-weather="{{ weather_main }}">
 
 <div class="header">
 {{ city }}

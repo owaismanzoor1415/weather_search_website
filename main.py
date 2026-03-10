@@ -104,11 +104,15 @@ def today(city):
     r.raise_for_status()
     js = r.json()
 
+    sunrise = js["sys"]["sunrise"]
+    sunset = js["sys"]["sunset"]
+
     data = {
         "city": city,
         "temp": round(js["main"]["temp"]),
         "today_high": round(js["main"]["temp_max"]),
         "today_low": round(js["main"]["temp_min"]),
+        "main": js["weather"][0]["main"],     
         "desc": js["weather"][0]["description"],
         "icon": weather_icon(
             js["weather"][0]["main"],
@@ -117,7 +121,12 @@ def today(city):
         "dt": datetime.now().strftime("%d %b %Y, %I:%M %p")
     }
 
-    return render_template("today.html", data=data)
+    return render_template(
+        "today.html",
+        data=data,
+        sunrise=sunrise,
+        sunset=sunset
+    )
 
 # ================= WEATHER CITY =================
 @app.route("/weather/<city>")
@@ -148,6 +157,20 @@ def api_history():
 @app.route("/weather/<city>/hourly")
 def hourly(city):
 
+    # current weather (for NOW)
+    current = requests.get(
+        "https://api.openweathermap.org/data/2.5/weather",
+        params={
+            "q": city,
+            "appid": API_KEY,
+            "units": "metric"
+        },
+        timeout=8
+    )
+
+    current.raise_for_status()
+    current_js = current.json()
+
     r = requests.get(
         "https://api.openweathermap.org/data/2.5/forecast",
         params={
@@ -165,7 +188,20 @@ def hourly(city):
 
     hourly_data = []
 
-    for i, it in enumerate(js["list"][:12]):
+    # add NOW manually
+    hourly_data.append({
+        "time": "NOW",
+        "temp": round(current_js["main"]["temp"]),
+        "humidity": current_js["main"]["humidity"],
+        "icon": weather_icon(
+            current_js["weather"][0]["main"],
+            current_js["weather"][0]["description"]
+        ),
+        "is_now": True
+    })
+
+    # forecast hours
+    for it in js["list"][:11]:
 
         local_time = (
             _dt.utcfromtimestamp(it["dt"]) +
@@ -173,20 +209,23 @@ def hourly(city):
         )
 
         hourly_data.append({
-            "time": "NOW" if i == 0 else local_time.strftime("%I:%M %p").lstrip("0"),
+            "time": local_time.strftime("%I:%M %p").lstrip("0"),
             "temp": round(it["main"]["temp"]),
             "humidity": it["main"]["humidity"],
             "icon": weather_icon(
                 it["weather"][0]["main"],
                 it["weather"][0]["description"]
             ),
-            "is_now": i == 0
+            "is_now": False
         })
+
+    current_weather = current_js["weather"][0]["main"]
 
     return render_template(
         "hourly.html",
         city=city,
-        hourly=hourly_data
+        hourly=hourly_data,
+        weather_main=current_weather
     )
 
 # ================= DAILY =================
@@ -236,10 +275,14 @@ def daily(city):
             "desc": desc.capitalize()
         })
 
+    # ⭐ get current weather for background
+    current_weather = js["list"][0]["weather"][0]["main"]
+
     return render_template(
         "daily.html",
         city=city,
-        days=days
+        days=days,
+        weather_main=current_weather
     )
 
 # ================= RUN =================
