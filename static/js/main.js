@@ -306,25 +306,6 @@ refreshAndOpen(city, view);
 
 /* ---------------- INSTALL APP ---------------- */
 
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
-
-/* hide button initially */
-
-installBtn.style.display = "none";
-
-/* detect install availability */
-
-window.addEventListener("beforeinstallprompt", (e) => {
-
-e.preventDefault();
-
-deferredPrompt = e;
-
-installBtn.style.display = "block";
-
-});
-
 /* install click */
 
 installBtn.addEventListener("click", async () => {
